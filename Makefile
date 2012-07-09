@@ -29,6 +29,9 @@ CPUS:=$(shell grep processor /proc/cpuinfo | wc -l)
 PREFIX=/opt/claws
 RAMD=/dev/shm
 PKG_CP=$(PREFIX)/lib/pkgconfig
+# additional flags for core configuration
+CLAWS_FLAGS=
+# plugins to be built
 PLUGIN_LIST=acpi_notifier address_keeper archive attachwarner att_remover bsfilter clamd etpan-privacy fancy fetchinfo gdata geolocation gtkhtml2_viewer mailmbox newmail notification perl python rssyl spam_report tnef_parse vcalendar
 # patching
 CLAWS_SER=./claws.series
@@ -75,7 +78,7 @@ patch-claws:
 
 compile-claws:
 	@echo "compile-claws: "`date`
-	cd b-claws && env PKG_CONFIG_PATH=$(PKG_CP) ./autogen.sh && env PKG_CONFIG_PATH=$(PKG_CP) ./configure --enable-new-addrbook --prefix=$(PREFIX) && make -j$(CPUS) && cd ..
+	cd b-claws && env PKG_CONFIG_PATH=$(PKG_CP) ./autogen.sh && env PKG_CONFIG_PATH=$(PKG_CP) ./configure $(CLAWS_FLAGS) --prefix=$(PREFIX) && make -j$(CPUS) && cd ..
 	@echo "compile-claws: "`date`
 
 install-claws: compile-claws
