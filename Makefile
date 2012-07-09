@@ -116,11 +116,11 @@ clean-plugins:
 
 compile-plugins:
 	@echo "compile-plugins: "`date`
-	for plugin in $(PLUGIN_LIST); do $(MAKE) b-plugins/build-$$plugin; done
+	for plugin in $(PLUGIN_LIST); do $(MAKE) PLUGIN=$$plugin b-plugins/build-$$plugin || break; done
 	@echo "compile-plugins: "`date`
 
 install-plugins: compile-plugins
-	for plugin in $(PLUGIN_LIST); do $(MAKE) b-plugins/install-$$plugin; done
+	for plugin in $(PLUGIN_LIST); do $(MAKE) PLUGIN=$$plugin b-plugins/install-$$plugin || break; done
 
 query-plugins:
 	@for plugin in $(PLUGIN_LIST); do cd b-plugins/$$plugin && echo "$$plugin "`grep '_VERSION=' ./configure.ac | head -4 | cut -f2 -d= | xargs | sed 's, ,.,g'` && cd ../..; done
