@@ -56,15 +56,25 @@ copy-from-mem:
 
 all-in-mem-copy: all-in-mem copy-from-mem
 
-plugins:
-	cvs -z3 -d:pserver:anonymous@claws-mail.org:/ checkout -r gtk2 plugins
+save-patch-claws:
+	cd claws && ( cvs diff -u 2> /dev/null > ../$@ || true ) && cd ..
 
-claws:
-	cvs -z3 -d:pserver:anonymous@claws-mail.org:/ checkout -r gtk2 claws
+save-patch-$(PLUGIN):
+	cd plugins/$(PLUGIN) && ( cvs diff -u 2> /dev/null > ../../$@ || true ) && cd ../..
+
+save-patches: save-patch-claws
+	for plugin in $(PLUGIN_LIST); do $(MAKE) PLUGIN=$$plugin save-patch-$$plugin || break; done
+	for patch in save-patch-*; do test -s $$patch || rm -f $$patch; done
+
+clean-patches:
+	rm -f save-patch-*
 
 #######################################################################
 # core
 #######################################################################
+
+claws:
+	cvs -z3 -d:pserver:anonymous@claws-mail.org:/ checkout -r gtk2 claws
 
 update-claws: claws
 	cd claws && cvs -z3 update -dP && cd ..
@@ -90,6 +100,9 @@ dist-claws:
 #######################################################################
 # plugins
 #######################################################################
+
+plugins:
+	cvs -z3 -d:pserver:anonymous@claws-mail.org:/ checkout -r gtk2 plugins
 
 update-plugins: plugins
 	cd plugins && cvs -z3 update -dP && cd ..
@@ -128,5 +141,5 @@ install-plugins: compile-plugins
 query-plugins:
 	@for plugin in $(PLUGIN_LIST); do cd b-plugins/$$plugin && echo "$$plugin "`grep '_VERSION=' ./configure.ac | head -4 | cut -f2 -d= | xargs | sed 's, ,.,g'` && cd ../..; done
 
-.PHONY: build-claws build-plugins update-claws copy-claws patch-claws compile-claws install-claws update-plugins copy-plugins patch-plugins clean-plugins compile-plugins install-plugins all-in-mem copy-from-mem all-in-mem-copy
+.PHONY: build-claws build-plugins update-claws copy-claws patch-claws compile-claws install-claws update-plugins copy-plugins patch-plugins clean-plugins compile-plugins install-plugins all-in-mem copy-from-mem all-in-mem-copy save-patches clean-patches
 
