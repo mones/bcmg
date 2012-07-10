@@ -69,6 +69,11 @@ save-patches: save-patch-claws
 clean-patches:
 	rm -f save-patch-*
 
+start-from-scratch:
+	rm -f $(CLAWS_SER) $(PLUGINS_SER)
+	rm -rf ./claws ./b-claws ./plugins ./b-plugins
+	rm -rf $(PREFIX)/*
+
 #######################################################################
 # core
 #######################################################################
@@ -141,5 +146,5 @@ install-plugins: compile-plugins
 query-plugins:
 	@for plugin in $(PLUGIN_LIST); do cd b-plugins/$$plugin && echo "$$plugin "`grep '_VERSION=' ./configure.ac | head -4 | cut -f2 -d= | xargs | sed 's, ,.,g'` && cd ../..; done
 
-.PHONY: build-claws build-plugins update-claws copy-claws patch-claws compile-claws install-claws update-plugins copy-plugins patch-plugins clean-plugins compile-plugins install-plugins all-in-mem copy-from-mem all-in-mem-copy save-patches clean-patches
+.PHONY: build-claws build-plugins update-claws copy-claws patch-claws compile-claws install-claws update-plugins copy-plugins patch-plugins clean-plugins compile-plugins install-plugins all-in-mem copy-from-mem all-in-mem-copy save-patches clean-patches start-from-scratch
 
