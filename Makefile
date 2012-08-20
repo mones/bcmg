@@ -32,7 +32,7 @@ PKG_CP=$(PREFIX)/lib/pkgconfig
 # additional flags for core configuration
 CLAWS_FLAGS=
 # plugins to be built
-PLUGIN_LIST=acpi_notifier address_keeper archive attachwarner att_remover bsfilter clamd fancy fetchinfo gdata geolocation gtkhtml2_viewer mailmbox newmail notification perl python rssyl spam_report tnef_parse vcalendar
+PLUGIN_LIST=acpi_notifier address_keeper archive attachwarner att_remover bsfilter clamd fancy fetchinfo gdata geolocation gtkhtml2_viewer mailmbox newmail notification perl python rssyl spam_report tnef_parse vcalendar pdf_viewer
 # patching
 CLAWS_SER=./claws.series
 PLUGINS_SER=./plugins.series
