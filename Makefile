@@ -87,6 +87,7 @@ update-claws: claws
 copy-claws:
 	rm -rf b-claws
 	cp -rp claws b-claws
+	cd b-claws && git init . && git add * && git commit -m 'latest cvs' && cd ..
 
 patch-claws:
 	test ! -f $(CLAWS_SER) || for patch in `cat $(CLAWS_SER)`; do echo "Applying claws patch $$patch" && cd b-claws && patch -p0 < ../$$patch && cd ..; done
@@ -115,6 +116,7 @@ update-plugins: plugins
 copy-plugins:
 	rm -rf b-plugins
 	cp -rp plugins b-plugins
+	cd b-plugins && git init . && git add * && git commit -m 'latest cvs' && cd ..
 
 patch-plugins:
 	test ! -f $(PLUGINS_SER) || for patch in `cat $(PLUGINS_SER)`; do echo "Applying plugins patch $$patch" && cd b-plugins && patch -p0 < ../$$patch && cd ..; done
