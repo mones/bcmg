@@ -1,7 +1,7 @@
 #
 # Makefile for CVS Claws Mail and plugins under Debian GNU/Linux
 #
-# Copyright 2011-2012 by Ricardo Mones <ricardo@mones.org>
+# Copyright 2011-2013 by Ricardo Mones <ricardo@mones.org>
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ PLUGIN_LIST=acpi_notifier address_keeper archive attachwarner att_remover bsfilt
 CLAWS_SER=./claws.series
 PLUGINS_SER=./plugins.series
 
-all: build-claws build-plugins
+all: build-claws
 
 build-claws: update-claws copy-claws patch-claws install-claws
 
