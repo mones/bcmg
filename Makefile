@@ -43,18 +43,18 @@ build-claws: update-claws copy-claws patch-claws install-claws
 
 build-plugins: update-plugins copy-plugins patch-plugins install-plugins
 
-all-in-mem:
+all-in-ram:
 	rm -rf $ $(RAMD)/b-claws $(RAMD)/b-plugins
 	cp ./Makefile $(RAMD)
 	make -C $(RAMD)
 
-copy-from-mem:
+copy-from-ram:
 	cp -rp $(RAMD)/claws .
 	cp -rp $(RAMD)/plugins .
-	cp -rp $(RAMD)/b-claws .
-	cp -rp $(RAMD)/b-plugins .
+	cp -rpf $(RAMD)/b-claws .
+	cp -rpf $(RAMD)/b-plugins .
 
-all-in-mem-copy: all-in-mem copy-from-mem
+all-in-ram-copy: all-in-ram copy-from-ram
 
 save-patch-claws:
 	cd claws && ( cvs diff -u 2> /dev/null > ../$@ || true ) && cd ..
