@@ -89,11 +89,15 @@ compile-claws: b-claws/Makefile
 	cd b-claws && make -j$(CPUS) && cd ..
 	@echo "compile-claws: "`date`
 
+rebuild-claws:
+	rm -f b-claws/Makefile b-claws/configure
+	$(MAKE) compile-claws
+
 install-claws: compile-claws
 	cd b-claws && make install && cd ..
 
 dist-claws:
 	cd b-claws && ./autogen.sh && make -j$(CPUS) dist && cd ..
 
-.PHONY: build-claws update-claws copy-claws patch-claws configure-claws compile-claws install-claws all-in-ram copy-from-ram all-in-ram-copy save-patches clean-patches start-from-scratch
+.PHONY: build-claws update-claws copy-claws patch-claws configure-claws compile-claws rebuild-claws install-claws all-in-ram copy-from-ram all-in-ram-copy save-patches clean-patches start-from-scratch
 
