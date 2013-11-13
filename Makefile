@@ -99,5 +99,11 @@ install-claws: compile-claws
 dist-claws:
 	cd b-claws && ./autogen.sh && make -j$(CPUS) dist && cd ..
 
-.PHONY: build-claws update-claws copy-claws patch-claws configure-claws compile-claws rebuild-claws install-claws all-in-ram copy-from-ram all-in-ram-copy save-patches clean-patches start-from-scratch
+log:
+	cd claws && git log || cd ..
 
+b-log:
+	cd b-claws && git log || cd ..
+
+.PHONY: build-claws update-claws copy-claws patch-claws configure-claws compile-claws rebuild-claws install-claws all
+-in-ram copy-from-ram all-in-ram-copy save-patches clean-patches start-from-scratch log b-log
