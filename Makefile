@@ -25,7 +25,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-CPUS:=$(shell grep processor /proc/cpuinfo | wc -l)
+CPUS?=$(shell grep processor /proc/cpuinfo | wc -l)
 PREFIX=/opt/claws
 RAMD=/dev/shm
 PKG_CP=$(PREFIX)/lib/pkgconfig
