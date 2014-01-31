@@ -28,6 +28,7 @@
 CPUS?=$(shell grep processor /proc/cpuinfo | wc -l)
 PREFIX=/opt/claws
 RAMD=/dev/shm
+LOGDIR?=..
 PKG_CP=$(PREFIX)/lib/pkgconfig
 # additional flags for core configuration
 CLAWS_FLAGS=--enable-maintainer-mode
@@ -76,17 +77,17 @@ patch-claws:
 
 b-claws/configure:
 	@echo "autogen-claws: "`date`
-	cd b-claws && env PKG_CONFIG_PATH=$(PKG_CP) ./autogen.sh && cd ..
+	cd b-claws && env PKG_CONFIG_PATH=$(PKG_CP) ./autogen.sh > $(LOGDIR)/log-autogen-claws.txt 2>&1 && cd ..
 	@echo "autogen-claws: "`date`
 
 b-claws/Makefile: b-claws/configure
 	@echo "configure-claws: "`date`
-	cd b-claws && env PKG_CONFIG_PATH=$(PKG_CP) ./configure $(CLAWS_FLAGS) --prefix=$(PREFIX) && cd ..
+	cd b-claws && env PKG_CONFIG_PATH=$(PKG_CP) ./configure $(CLAWS_FLAGS) --prefix=$(PREFIX) > $(LOGDIR)/log-configure-claws.txt 2>&1 && cd ..
 	@echo "configure-claws: "`date`
 
 compile-claws: b-claws/Makefile
 	@echo "compile-claws: "`date`
-	cd b-claws && make -j$(CPUS) && cd ..
+	cd b-claws && make -j$(CPUS) > $(LOGDIR)/log-compile-claws.txt 2>&1 && cd ..
 	@echo "compile-claws: "`date`
 
 rebuild-claws:
@@ -94,7 +95,9 @@ rebuild-claws:
 	$(MAKE) compile-claws
 
 install-claws: compile-claws
-	cd b-claws && make install && cd ..
+	@echo "install-claws: "`date`
+	cd b-claws && make install > $(LOGDIR)/log-install-claws.txt 2>&1 && cd ..
+	@echo "install-claws: "`date`
 
 dist-claws:
 	cd b-claws && ./autogen.sh && make -j$(CPUS) dist && cd ..
