@@ -62,14 +62,14 @@ start-from-scratch:
 #######################################################################
 
 claws:
-	git clone git://git.claws-mail.org/claws.git
+	git clone http://git.claws-mail.org/readonly/claws.git
 
 update-claws: claws
 	cd claws && git pull --all && cd ..
 
 copy-claws:
-	rm -rf b-claws
-	cp -rp claws b-claws
+	test ! -d b-claws && git clone claws b-claws || true
+	cd b-claws && git checkout master && git pull --all && git rebase master && cd ..
 
 patch-claws:
 	test ! -f $(CLAWS_SER) || for patch in `cat $(CLAWS_SER)`; do echo "Applying claws patch $$patch" && cd b-claws && patch -p0 < ../$$patch && cd ..; done
