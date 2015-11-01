@@ -34,10 +34,13 @@ PKG_CP=$(PREFIX)/lib/pkgconfig
 CLAWS_FLAGS=--enable-maintainer-mode
 # patching
 CLAWS_SER=./claws.series
+CLAWS_SER_GIT=./claws.series.git
 
 all: build-claws
 
 build-claws: update-claws copy-claws patch-claws install-claws
+
+build-claws-as-is: copy-claws patch-claws install-claws
 
 all-in-ram:
 	rm -rf $ $(RAMD)/b-claws
@@ -55,6 +58,7 @@ save-patch-claws:
 
 start-from-scratch:
 	rm -f $(CLAWS_SER)
+	rm -f $(CLAWS_SER_GIT)
 	rm -rf ./claws ./b-claws
 	rm -rf $(PREFIX)/*
 
@@ -63,7 +67,8 @@ start-from-scratch:
 #######################################################################
 
 claws:
-	git clone http://git.claws-mail.org/readonly/claws.git
+	# git clone http://git.claws-mail.org/readonly/claws.git
+	git clone git://git.claws-mail.org/claws.git
 
 update-claws: claws
 	cd claws && git pull --all && cd ..
@@ -73,7 +78,8 @@ copy-claws:
 	cd b-claws && git checkout master && git pull --all && git rebase master && cd ..
 
 patch-claws:
-	test ! -f $(CLAWS_SER) || for patch in `cat $(CLAWS_SER)`; do echo "Applying claws patch $$patch" && cd b-claws && patch -p0 < ../$$patch && cd ..; done
+	test ! -f $(CLAWS_SER) || for patch in `cat $(CLAWS_SER)`; do echo "Applying claws patch $$patch" && cd b-claws && patch -p1 < ../$$patch && cd ..; done
+	test ! -f $(CLAWS_SER_GIT) || for patch in `cat $(CLAWS_SER_GIT)`; do echo "Applying claws patch $$patch" && cd b-claws && git am ../$$patch && cd ..; done
 
 b-claws/configure:
 	@echo "autogen-claws: "`date`
@@ -90,14 +96,21 @@ compile-claws: b-claws/Makefile
 	cd b-claws && make -j$(CPUS) > $(LOGDIR)/log-compile-claws.txt 2>&1 && cd ..
 	@echo "compile-claws: "`date`
 
-rebuild-claws:
+unconfigure-claws:
 	rm -f b-claws/Makefile b-claws/configure
-	$(MAKE) compile-claws
+
+rebuild-claws: unconfigure-claws compile-claws
 
 install-claws: compile-claws
 	@echo "install-claws: "`date`
 	cd b-claws && make install > $(LOGDIR)/log-install-claws.txt 2>&1 && cd ..
 	@echo "install-claws: "`date`
+
+reinstall-claws: rebuild-claws install-claws
+
+redo-claws:
+	rm -rf b-claws
+	$(MAKE) build-claws
 
 dist-claws:
 	cd b-claws && ./autogen.sh && make -j$(CPUS) dist && cd ..
