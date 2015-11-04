@@ -1,7 +1,7 @@
 #
 # Makefile for Git Claws Mail and plugins under Debian GNU/Linux
 #
-# Copyright 2011-2013 by Ricardo Mones <ricardo@mones.org>
+# Copyright 2011-2015 by Ricardo Mones <ricardo@mones.org>
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,19 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-CPUS?=$(shell grep processor /proc/cpuinfo | wc -l)
-PREFIX=/opt/claws
-RAMD=/dev/shm
-LOGDIR?=..
-PKG_CP=$(PREFIX)/lib/pkgconfig
+CPUS   ?= $(shell grep processor /proc/cpuinfo | wc -l)
+URL    ?= http://git.claws-mail.org/readonly/claws.git
+BRANCH ?= master
+PREFIX ?= /opt/claws
+RAMD   ?= /dev/shm
+PKG_CP := $(PREFIX)/lib/pkgconfig
 # additional flags for core configuration
-CLAWS_FLAGS=--enable-maintainer-mode
-# patching
-CLAWS_SER=./claws.series
-CLAWS_SER_GIT=./claws.series.git
+CLAWS_FLAGS ?= --enable-maintainer-mode
+# local patching
+CLAWS_SER := ./claws.series
+CLAWS_GAM := ./claws.series.git
+# utilities
+AHEAD := $(shell test -d b-claws && cd b-claws && git rev-list --count origin..$(BRANCH) || echo 0 )
 
 all: build-claws
 
@@ -67,19 +70,18 @@ start-from-scratch:
 #######################################################################
 
 claws:
-	# git clone http://git.claws-mail.org/readonly/claws.git
-	git clone git://git.claws-mail.org/claws.git
+	git clone $(URL)
 
 update-claws: claws
 	cd claws && git pull --all && cd ..
 
 copy-claws:
 	test ! -d b-claws && git clone claws b-claws || true
-	cd b-claws && git checkout master && git pull --all && git rebase master && cd ..
+	cd b-claws && git checkout $(BRANCH) && git reset --hard @^$(AHEAD) && git pull --all && cd ..
 
 patch-claws:
-	test ! -f $(CLAWS_SER) || for patch in `cat $(CLAWS_SER)`; do echo "Applying claws patch $$patch" && cd b-claws && patch -p1 < ../$$patch && cd ..; done
-	test ! -f $(CLAWS_SER_GIT) || for patch in `cat $(CLAWS_SER_GIT)`; do echo "Applying claws patch $$patch" && cd b-claws && git am ../$$patch && cd ..; done
+	test ! -f $(CLAWS_GAM) || for patch in `cat $(CLAWS_GAM)`; do echo "***** $$patch" && cd b-claws && git am ../$$patch && cd ..; done
+	test ! -f $(CLAWS_SER) || for patch in `cat $(CLAWS_SER)`; do echo "***** $$patch" && cd b-claws && patch -p1 < ../$$patch && cd ..; done
 
 b-claws/configure:
 	@echo "autogen-claws: "`date`
