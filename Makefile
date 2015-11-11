@@ -30,6 +30,7 @@ URL    ?= http://git.claws-mail.org/readonly/claws.git
 BRANCH ?= master
 PREFIX ?= /opt/claws
 RAMD   ?= /dev/shm
+LOGDIR ?= $(shell pwd)
 PKG_CP := $(PREFIX)/lib/pkgconfig
 # additional flags for core configuration
 CLAWS_FLAGS ?= --enable-maintainer-mode
@@ -38,10 +39,12 @@ CLAWS_SER := ./claws.series
 CLAWS_GAM := ./claws.series.git
 # utilities
 AHEAD := $(shell test -d b-claws && cd b-claws && git rev-list --count origin..$(BRANCH) || echo 0 )
+MODIF := $(shell test -d b-claws && cd b-claws && git ls-files -m | grep -v po/.*.po | wc -l || echo 0)
+BRNCH := $(shell test -d b-claws && cd b-claws && git branch | grep ^\* | cut -f2 -d\ )
 
 all: build-claws
 
-build-claws: update-claws copy-claws patch-claws install-claws
+build-claws: update-claws copy-claws patch-claws unconfigure-claws install-claws
 
 build-claws-as-is: copy-claws patch-claws install-claws
 
@@ -77,11 +80,13 @@ update-claws: claws
 
 copy-claws:
 	test ! -d b-claws && git clone claws b-claws || true
-	cd b-claws && git checkout $(BRANCH) && git reset --hard @^$(AHEAD) && git pull --all && cd ..
+	test $(BRNCH) != $(BRANCH) && cd b-claws && git checkout $(BRANCH) && cd .. || true
+	test $(MODIF) -eq 0 && cd b-claws && git checkout `git ls-files -m | xargs` && cd .. || true
+	test $(AHEAD) -gt 0 && cd b-claws && git reset --hard @~$(AHEAD) && cd .. || true
 
 patch-claws:
-	test ! -f $(CLAWS_GAM) || for patch in `cat $(CLAWS_GAM)`; do echo "***** $$patch" && cd b-claws && git am ../$$patch && cd ..; done
-	test ! -f $(CLAWS_SER) || for patch in `cat $(CLAWS_SER)`; do echo "***** $$patch" && cd b-claws && patch -p1 < ../$$patch && cd ..; done
+	@test ! -f $(CLAWS_GAM) || for patch in `cat $(CLAWS_GAM)`; do echo "***** $$patch" && cd b-claws && git am ../$$patch && cd ..; done
+	@test ! -f $(CLAWS_SER) || for patch in `cat $(CLAWS_SER)`; do echo "***** $$patch" && cd b-claws && patch -p1 < ../$$patch && cd ..; done
 
 b-claws/configure:
 	@echo "autogen-claws: "`date`
