@@ -35,7 +35,6 @@ PKG_CP := $(PREFIX)/lib/pkgconfig
 # additional flags for core configuration
 CLAWS_FLAGS ?= --enable-maintainer-mode
 # local patching
-CLAWS_SER := ./claws.series
 CLAWS_GAM := ./claws.series.git
 # utilities
 AHEAD := $(shell test -d b-claws && cd b-claws && git rev-list --count origin..$(BRANCH) || echo 0 )
@@ -63,8 +62,6 @@ save-patch-claws:
 	cd claws && ( cvs diff -u 2> /dev/null > ../$@ || true ) && cd ..
 
 start-from-scratch:
-	rm -f $(CLAWS_SER)
-	rm -f $(CLAWS_SER_GIT)
 	rm -rf ./claws ./b-claws
 	rm -rf $(PREFIX)/*
 
@@ -87,7 +84,6 @@ copy-claws:
 
 patch-claws:
 	@test ! -f $(CLAWS_GAM) || for patch in `cat $(CLAWS_GAM)`; do echo "***** $$patch" && cd b-claws && git am ../$$patch && cd ..; done
-	@test ! -f $(CLAWS_SER) || for patch in `cat $(CLAWS_SER)`; do echo "***** $$patch" && cd b-claws && patch -p1 < ../$$patch && cd ..; done
 
 b-claws/configure:
 	@echo "autogen-claws: "`date`
