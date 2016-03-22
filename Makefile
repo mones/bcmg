@@ -1,7 +1,7 @@
 #
 # Makefile for Git Claws Mail and plugins under Debian GNU/Linux
 #
-# Copyright 2011-2015 by Ricardo Mones <ricardo@mones.org>
+# Copyright 2011-2016 by Ricardo Mones <ricardo@mones.org>
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
