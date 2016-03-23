@@ -35,6 +35,8 @@ PKG_CP := $(PREFIX)/lib/pkgconfig
 # additional flags for core configuration
 CLAWS_FLAGS ?= --enable-maintainer-mode
 # local patching
+CLAWS_GAM_DIR := claws.series
+CLAWS_GAM_DIR_P := $(wildcard $(CLAWS_GAM_DIR)/*.patch)
 CLAWS_GAM := ./claws.series.git
 # utilities
 AHEAD := $(shell test -d b-claws && cd b-claws && git rev-list --count origin..$(BRANCH) || echo 0 )
@@ -82,8 +84,15 @@ copy-claws:
 	test $(AHEAD) -gt 0 && cd b-claws && git reset --hard @~$(AHEAD) && cd .. || true
 	cd b-claws && git pull --all && cd ..
 
-patch-claws:
+patch-claws-file:
 	@test ! -f $(CLAWS_GAM) || for patch in `cat $(CLAWS_GAM)`; do echo "***** $$patch" && cd b-claws && git am ../$$patch && cd ..; done
+
+patch-claws-dir:
+	@test ! -d $(CLAWS_GAM_DIR) || for patch in $(CLAWS_GAM_DIR_P); do echo "***** $$patch" && cd b-claws && git am ../$$patch && cd ..; done
+
+patch-claws:
+	@test -d $(CLAWS_GAM_DIR) && $(MAKE) patch-claws-dir || true
+	@test ! -d $(CLAWS_GAM_DIR) -a -f $(CLAWS_GAM) && $(MAKE) patch-claws-file || true
 
 b-claws/configure:
 	@echo "autogen-claws: "`date`
@@ -125,4 +134,4 @@ log:
 b-log:
 	cd b-claws && git log || cd ..
 
-.PHONY: build-claws update-claws copy-claws patch-claws configure-claws compile-claws rebuild-claws install-claws all-in-ram copy-from-ram all-in-ram-copy save-patches clean-patches start-from-scratch log b-log
+.PHONY: build-claws update-claws copy-claws patch-claws patch-claws-file patch-claws-dir configure-claws compile-claws rebuild-claws install-claws all-in-ram copy-from-ram all-in-ram-copy save-patches clean-patches start-from-scratch log b-log
