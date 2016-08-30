@@ -67,6 +67,14 @@ start-from-scratch:
 	rm -rf ./claws ./b-claws
 	rm -rf $(PREFIX)/*
 
+build-info:
+	@echo "Remote: "$(URL)
+	@echo "Branch: "$(BRANCH)
+	@echo "Prefix: "$(PREFIX)
+	@echo "Logs  : "$(LOGDIR)
+	@echo "Cores : "$(CPUS)
+	@# echo "RAMdev: "$(RAMD)
+
 #######################################################################
 # core
 #######################################################################
@@ -134,4 +142,4 @@ log:
 b-log:
 	cd b-claws && git log || cd ..
 
-.PHONY: build-claws update-claws copy-claws patch-claws patch-claws-file patch-claws-dir configure-claws compile-claws rebuild-claws install-claws all-in-ram copy-from-ram all-in-ram-copy save-patches clean-patches start-from-scratch log b-log
+.PHONY: build-claws update-claws copy-claws patch-claws patch-claws-file patch-claws-dir configure-claws compile-claws rebuild-claws install-claws all-in-ram copy-from-ram all-in-ram-copy save-patches clean-patches start-from-scratch log b-log build-info
