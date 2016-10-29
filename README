@@ -4,7 +4,7 @@ Build Claws Mail from Git repo
 
 This Makefile does what the above title says. So far is targeted to
 Debian-based systems and AFAIK only tested on Debian itself. Anyway
-it should work on any similar system (except the bootstraping part).
+it should work on any similar system (except the bootstrapping part).
 
 Before you start
 ----------------
