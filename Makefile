@@ -142,4 +142,7 @@ log:
 b-log:
 	cd b-claws && git log || cd ..
 
+bootstrap-debian:
+	sudo apt-get build-dep claws-mail
+
 .PHONY: build-claws update-claws copy-claws patch-claws patch-claws-file patch-claws-dir configure-claws compile-claws rebuild-claws install-claws all-in-ram copy-from-ram all-in-ram-copy save-patches clean-patches start-from-scratch log b-log build-info
