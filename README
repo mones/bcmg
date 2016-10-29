@@ -1,0 +1,65 @@
+
+Build Claws Mail from Git repo
+==============================
+
+This Makefile does what the above title says. So far is targeted to
+Debian-based systems and AFAIK only tested on Debian itself. Anyway
+it should work on any similar system (except the bootstraping part).
+
+Before you start
+----------------
+
+You need the Makefile on your system, so first step is to install
+git and clone the repository. Assuming you're in the directory
+where you want to build it:
+
+$ sudo apt-get install git
+$ git clone https://github.com/mones/bcmg.git
+$ ln -s bcmp/Makefile
+
+To use the Makefile you need "make" to be installed on your System:
+
+$ sudo apt-get install make
+
+After make is installed you need to install the libraries required
+to build Claws Mail:
+
+$ sudo make bootstrap-debian
+
+Patches to add bootstrap-$yoursystem targets are welcome.
+
+Default directory for installation is '/opt/claws'. You can change
+this by editing the value of PREFIX variable in Makefile or passing
+PREFIX=/some/dir to the make command.
+
+Be sure the user invoking make has the right permissions to write
+on /opt/claws directory (or the one you had set), for example:
+
+$ sudo mkdir /opt/claws
+$ sudo chown user:user /opt/claws
+
+Building Claws Mail
+-------------------
+
+After completing the previous section this is now very easy:
+
+$ make
+
+That's all. Some log files will be created, so you can check later.
+
+Launching Claws Mail 
+--------------------
+
+Binary will be on /opt/claws/bin/claws-mail. You may want to add
+/opt/claws/bin to your path if you want to use it regularly:
+
+$ echo '$PATH=/opt/claws/bin:$PATH' >> $HOME/.bashrc
+$ source $HOME/.bashrc
+
+Or alternatively make a link on some of the directories already on
+your path. User's home bin is very suitable for this:
+
+$ test -d $HOME/bin || mkdir $HOME/bin
+$ cd $HOME/bin
+$ ln -s /opt/claws/bin/claws-mail
+
