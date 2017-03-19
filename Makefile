@@ -87,7 +87,7 @@ update-claws: claws
 
 copy-claws:
 	test ! -d b-claws && git clone claws b-claws || true
-	test $(BRNCH) != $(BRANCH) && cd b-claws && git checkout $(BRANCH) && cd .. || true
+	test "$(BRNCH)" != $(BRANCH) && cd b-claws && git checkout $(BRANCH) && cd .. || true
 	test $(MODIF) -eq 0 && cd b-claws && git checkout `git ls-files -m | xargs` && cd .. || true
 	test $(AHEAD) -gt 0 && cd b-claws && git reset --hard @~$(AHEAD) && cd .. || true
 	cd b-claws && git pull --all && cd ..
